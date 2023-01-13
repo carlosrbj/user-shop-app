@@ -3,6 +3,7 @@ package com.hsob.usershopapp.DTO;
 import com.hsob.usershopapp.model.user.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
 
@@ -23,17 +24,8 @@ public class UserResponse implements Serializable {
     private String phone;
     private UserType userType;
 
-    public static UserResponse toEntity(User user) {
-        UserResponse response = new UserResponse();
-        response.setName(user.getName());
-        response.setUsername(user.getUsername());
-        response.setGender(user.getGender());
-        response.setGenderIdentity(user.getGenderIdentity());
-        response.setSocialName(user.getSocialName());
-        response.setDocumentType(user.getDocumentType());
-        response.setDocument(user.getDocument());
-        response.setPhone(user.getPhone());
-        response.setUserType(user.getUserType());
-        return response;
+    public UserResponse toEntity(User user) {
+        BeanUtils.copyProperties(user, this);
+        return this;
     }
 }

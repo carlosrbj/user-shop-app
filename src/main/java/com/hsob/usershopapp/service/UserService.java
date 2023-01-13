@@ -84,10 +84,11 @@ public class UserService extends ShopAppDAO {
 
     public UserResponse getUser(String document, String username) {
         User user = null;
+        UserResponse userResponse = new UserResponse();
         if (document != null) user = shopAppDB.findOne(new Query(Criteria.where("document").is(document)), User.class);
         if (username != null) user = shopAppDB.findOne(new Query(Criteria.where("username").is(username)), User.class);
         if (user != null) {
-            return UserResponse.toEntity(user);
+            return userResponse.toEntity(user);
         } else {
             String msg = "User not found";
             logger.info(msg);
