@@ -5,6 +5,9 @@ import com.hsob.usershopapp.DTO.UserResponse;
 import com.hsob.usershopapp.model.user.Address;
 import com.hsob.usershopapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +31,11 @@ public class UserController {
     @GetMapping
     public  ResponseEntity<UserResponse> getUser(@RequestParam(required = false) String document, @RequestParam(required = false) String username){
         return ResponseEntity.ok(userService.getUser(document, username));
+    }
+
+    @GetMapping("/getAllUsers")
+    public  ResponseEntity<PageImpl<UserResponse>> getAllUsers(@RequestParam int page, @RequestParam int size, @RequestParam(required = false) String name){
+        return ResponseEntity.ok(userService.getAllUsers(page, size, name));
     }
 
 

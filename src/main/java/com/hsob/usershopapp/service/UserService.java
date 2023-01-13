@@ -6,10 +6,15 @@ import com.hsob.usershopapp.Utils;
 import com.hsob.usershopapp.model.user.Address;
 import com.hsob.usershopapp.model.user.User;
 import com.hsob.usershopapp.repository.ShopAppDAO;
+import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
 
 /**
  * @author carlos
@@ -94,5 +99,22 @@ public class UserService extends ShopAppDAO {
             logger.info(msg);
             throw new IllegalArgumentException(msg);
         }
+    }
+
+    public PageImpl<UserResponse> getAllUsers(int page, int size, String name) {
+        Query query = new Query();
+        List<User> users = Collections.emptyList();
+        List<UserResponse> userResponses = new java.util.ArrayList<>(Collections.emptyList());
+
+        if (!name.isEmpty()) query.addCriteria(Criteria.where("name").regex(name, "i"));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "name");
+        long count = shopAppDB.count(query, User.class);
+        query.with(pageable);
+
+        if (count > 0) users = shopAppDB.find(query, User.class);
+        for (User user : users) userResponses.add(UserResponse.toEntity(user));
+
+        return new PageImpl<>(userResponses, pageable, count);
     }
 }
