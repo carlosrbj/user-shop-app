@@ -28,7 +28,8 @@ public class UserService extends ShopAppDAO {
             Utils.validateNewPassword(password, confirmPassword);
             checkDocument(userRequest);
             checkUsername(userRequest);
-            User user = User.toEntity(userRequest);
+            User user = new User();
+            user.toEntity(userRequest);
             validateUserEntity(user, password);
             shopAppDB.save(user);
         } catch (Exception exception){
@@ -113,7 +114,10 @@ public class UserService extends ShopAppDAO {
         query.with(pageable);
 
         if (count > 0) users = shopAppDB.find(query, User.class);
-        for (User user : users) userResponses.add(UserResponse.toEntity(user));
+        for (User user : users) {
+            UserResponse userResponse = new UserResponse();
+            userResponses.add(userResponse.toEntity(user));
+        }
 
         return new PageImpl<>(userResponses, pageable, count);
     }
